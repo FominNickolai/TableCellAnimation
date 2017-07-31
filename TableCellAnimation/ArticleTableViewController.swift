@@ -17,6 +17,8 @@ class ArticleTableViewController: UITableViewController {
                       "Creating Gradient Colors Using CAGradientLayer",
                       "A Beginner's Guide to CALayer"];
     let postImages = ["imessage-sticker-pack", "face-detection-featured", "speech-kit-featured", "vapor-web-framework", "cagradientlayer-demo", "calayer-featured"];
+    
+    var displayedCells =  Set<ArticleTableViewCell>()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,16 +49,25 @@ class ArticleTableViewController: UITableViewController {
         // Configure the cell...
         cell.titleLabel.text = postTitles[(indexPath as NSIndexPath).row]
         cell.postImageView.image = UIImage(named: postImages[(indexPath as NSIndexPath).row])
-
+        
         return cell
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
+        guard let tableCell = cell as? ArticleTableViewCell else {
+            return
+        }
+        
+        if displayedCells.contains(tableCell) {
+            return
+        }
+        
         //Define the initial state (Before animation)
         //cell.alpha = 0
-        let rotationAngleInRadians = 90.0 * CGFloat(Double.pi/180.0)
-        let rotationTransform = CATransform3DMakeRotation(rotationAngleInRadians, 0, 0, 1)
+        //let rotationAngleInRadians = 90.0 * CGFloat(Double.pi/180.0)
+        //let rotationTransform = CATransform3DMakeRotation(rotationAngleInRadians, 0, 0, 1)
+        let rotationTransform = CATransform3DTranslate(CATransform3DIdentity, 500, 100, 0)
         cell.layer.transform = rotationTransform
 
         //Define the final state (After the animation)
@@ -67,6 +78,8 @@ class ArticleTableViewController: UITableViewController {
         UIView.animate(withDuration: 1.0) {
             cell.layer.transform = CATransform3DIdentity
         }
+        
+        displayedCells.insert(tableCell)
         
     }
     
